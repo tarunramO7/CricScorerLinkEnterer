@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        input[type="url"]::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        input[type="url"]:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-width: 120px;
+        }
+
+        .primary-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .primary-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            min-height: 20px;
+        }
+
+        .status.success {
+            background: rgba(76, 217, 100, 0.2);
+            color: #4cd964;
+            border: 1px solid rgba(76, 217, 100, 0.3);
+        }
+
+        .status.error {
+            background: rgba(255, 59, 48, 0.2);
+            color: #ff3b30;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+        }
+
+        .current-link {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .current-link h3 {
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .link-display {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            word-break: break-all;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Link Manager</h1>
+        <p class="subtitle">Enter a link to share with your Raspberry Pi Pico</p>
+        
+        <div class="input-group">
+            <div class="input-wrapper">
+                <input 
+                    type="url" 
+                    id="linkInput" 
+                    placeholder="https://example.com" 
+                    autocomplete="url"
+                >
+            </div>
+            
+            <div class="button-group">
+                <button class="primary-btn" onclick="saveLink()">Save Link</button>
+                <button class="secondary-btn" onclick="clearLink()">Clear</button>
+            </div>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div class="current-link">
+            <h3>Current Link:</h3>
+            <div id="currentLink" class="link-display">No link set</div>
+        </div>
+    </div>
+
+    <script>
+        // Load existing link on page load
+        window.addEventListener('load', function() {
+            loadCurrentLink();
+        });
+
+        // Auto-save as user types (with debouncing)
+        let saveTimeout;
+        document.getElementById('linkInput').addEventListener('input', function() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveLink, 1000); // Auto-save after 1 second of no typing
+        });
+
+        function saveLink() {
+            const linkInput = document.getElementById('linkInput');
+            const statusDiv = document.getElementById('status');
+            const link = linkInput.value.trim();
+            
+            if (!link) {
+                showStatus('Please enter a link', 'error');
+                return;
+            }
+            
+            // Basic URL validation
+            try {
+                new URL(link);
+            } catch (e) {
+                showStatus('Please enter a valid URL', 'error');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('sharedLink', link);
+            
+            // Update display
+            updateCurrentLink(link);
+            showStatus('Link saved successfully!', 'success');
+        }
+        
+        function clearLink() {
+            document.getElementById('linkInput').value = '';
+            localStorage.removeItem('sharedLink');
+            updateCurrentLink('');
+            showStatus('Link cleared', 'success');
+        }
+        
+        function loadCurrentLink() {
+            const savedLink = localStorage.getItem('sharedLink') || '';
+            document.getElementById('linkInput').value = savedLink;
+            updateCurrentLink(savedLink);
+        }
+        
+        function updateCurrentLink(link) {
+            const currentLinkDiv = document.getElementById('currentLink');
+            currentLinkDiv.textContent = link || 'No link set';
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            
+            // Clear status after 3 seconds
+            setTimeout(() => {
+                statusDiv.textContent = '';
+                statusDiv.className = 'status';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

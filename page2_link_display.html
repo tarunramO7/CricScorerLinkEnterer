@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Link</title>
+</head>
+<body>
+    <div id="link"></div>
+    
+    <script>
+        function updateLink() {
+            const savedLink = localStorage.getItem('sharedLink') || '';
+            document.getElementById('link').textContent = savedLink;
+        }
+        
+        // Update link on page load
+        updateLink();
+        
+        // Check for updates every 500ms
+        setInterval(updateLink, 500);
+        
+        // Also listen for storage changes (when another tab updates the link)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'sharedLink') {
+                updateLink();
+            }
+        });
+    </script>
+</body>
+</html>
